@@ -1,4 +1,4 @@
 pytest
 pytest-cov
 unittest2; python_version=='2.6'
-requests==2.8.1
+requests
