@@ -20,7 +20,7 @@ import re
 
 
 class Vercmp(object):
-    R_NONALNUMTILDE = re.compile(br"^([^a-zA-Z0-9~]*)(.*)$")
+    R_NONALNUMTILDE = re.compile(br"^([^a-zA-Z0-9~^]*)(.*)$")
     R_NUM = re.compile(br"^([\d]+)(.*)$")
     R_ALPHA = re.compile(br"^([a-zA-Z]+)(.*)$")
 
@@ -45,6 +45,17 @@ class Vercmp(object):
                 continue
             if second.startswith(b'~'):
                 return 1
+
+            # handle the circumflex separator
+            if first.startswith(b'^'):
+                if second.startswith(b'^'):
+                    first, second = first[1:], second[1:]
+                    continue
+                first = first[1:]
+                return -1 if second else 1
+            if second.startswith(b'^'):
+                second = second[1:]
+                return 1 if first else -1
 
             # If we ran to the end of either, we are finished with the loop
             if not first or not second:
